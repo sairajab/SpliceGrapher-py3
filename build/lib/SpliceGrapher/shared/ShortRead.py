@@ -102,7 +102,7 @@ def isDepthsFile(f) :
         inStream  = ezopen(f)
         firstLine = inStream.readline()
         inStream.close()
-    elif type(f) == file :
+    elif hasattr(f, "read") :
         inStream = f
         firstLine = inStream.readline()
         f.seek(0)
@@ -210,9 +210,9 @@ def writeDepths(ostr, depthDict, jctDict={}, verbose=False) :
     must provide an output destination (file path or writeable stream),
     and read depths stored as a dictionary of chromosome ids mapped
     to lists of integer values."""
-    if type(ostr) == file :
+    if hasattr(ostr, "write"):
         outStream = ostr
-    elif type(ostr) == str :
+    elif isinstance(ostr, str) :
         outStream = open(ostr, 'w')
     else :
         raise ValueError('Unrecognized file type: %s' % type(ostr))
@@ -272,7 +272,8 @@ class Read(object) :
         self.strand = strand
         self.count  = 1
         self.code   = READ_CODE
-        self.id     = Read.id_gen.next()
+        self.id     = next(Read.id_gen)
+
 
     def __eq__(self, other) :
         return self.chromosome == other.chromosome and self.strand == other.strand \

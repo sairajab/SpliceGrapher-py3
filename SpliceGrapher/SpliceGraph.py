@@ -1512,7 +1512,7 @@ class SpliceGraphParser(object) :
     def next(self) :
         """Iterator implementation."""
         try :
-            key = self.graphDict.keys()[self.graphId]
+            key = list(self.graphDict.keys())[self.graphId]
             self.graphId += 1
             return self.graphDict[key]
         except Exception :

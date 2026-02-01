@@ -927,9 +927,9 @@ def samInput(source) :
     """Convenience method that returns an iterator over a set of SAM records.
     If source is a list, set or file stream it returns the object.  A string
     is interpreted as a file path to be opened for input and the stream returned."""
-    if type(source) in [list, set, file] :
+    if isinstance(source, (list, set, tuple)) or hasattr(source, "read"):
         return source
-    elif type(source) == str :
+    elif isinstance(source, str) :
         return samIterator(source)
     else :
         raise ValueError('Unrecognized type %s for SAM input' % type(source))

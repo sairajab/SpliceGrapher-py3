@@ -83,7 +83,7 @@ def commaFormat(d) :
     """Formats integer values using commas.  For example, 123456789 becomes '123,456,789'"""
     # Establish user's default their OS:
     locale.setlocale(locale.LC_ALL, '')
-    return locale.format("%d", d, grouping=True)
+    return locale.format_string("%d", d, grouping=True)
 
 def configMap(cfgFile):
     """Reads a configuration file and returns a dictionary of all sections, options and values."""

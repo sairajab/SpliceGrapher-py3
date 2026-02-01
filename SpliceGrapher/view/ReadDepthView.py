@@ -64,7 +64,7 @@ class ReadDepthView(object) :
         if maxY >= self.logLimit :
             # 0 yields an undefined log value, so use 0.1 instead
             Y = [max(y,0.1) for y in Y]
-            self.axis.set_yscale('log', nonposy='clip')
+            self.axis.set_yscale('log', nonpositive='clip')
             self.axis.set_ylim(0.3, maxY)
         elif yLimit > 0.0 :
             self.axis.set_ylim(0.0, yLimit)

@@ -450,7 +450,8 @@ def plotLegend(patches, **args) :
     if not keys : keys = sorted(patches.keys())
     patchList = [patches[k] for k in keys]
     numCols   = int(math.ceil(math.sqrt(len(patches))))
-    figlegend(patchList, keys, LEGEND_PLACEMENT, ncol=numCols)
+    figlegend(patchList, keys, loc=LEGEND_PLACEMENT, ncol=numCols)
+
 
 def resolveSourcePath(p, **args) :
     """Resolves a source directory to a given file name if necessary."""
