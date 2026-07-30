@@ -32,8 +32,13 @@ class simpleJunction(object) :
         self.minpos = self.parent.maxpos if parent.strand == '+' else self.child.maxpos
         self.maxpos = self.child.minpos  if parent.strand == '+' else self.parent.minpos
 
-    def __cmp__(self, o) :
-        return self.maxpos-o.maxpos if self.minpos == o.minpos else self.minpos-o.minpos
+    def __eq__(self, o) :
+        return self.minpos == o.minpos and self.maxpos == o.maxpos
+
+    def __lt__(self, o) :
+        if not isinstance(o, type(self)) :
+            return NotImplemented
+        return (self.minpos, self.maxpos) < (o.minpos, o.maxpos)
 
     def __hash__(self) :
         return self.__str__().__hash__()
@@ -52,8 +57,11 @@ class uniqueExonFeature(object) :
     def descr(self) :
         return 'Feature (%d,%d) --> %s' % (self.minpos, self.maxpos, self.exon)
 
-    def __cmp__(self, o) : return (self.maxpos-o.maxpos) if self.minpos == o.minpos else (self.minpos-o.minpos)
     def __eq__(self, o)  : return (self.minpos,self.maxpos) == (o.minpos,o.maxpos)
+    def __lt__(self, o)  :
+        if not isinstance(o, type(self)) :
+            return NotImplemented
+        return (self.minpos,self.maxpos) < (o.minpos,o.maxpos)
     def __hash__(self)   : return self.__str__().__hash__()
     def __len__(self)    : return self.maxpos-self.minpos+1
     def __str__(self)    : return '%d,%d' % (self.minpos,self.maxpos)

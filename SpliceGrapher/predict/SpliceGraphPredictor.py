@@ -200,11 +200,13 @@ class VirtualCluster(object) :
         self.update(n)
         self.nodes.add(n)
 
-    def __cmp__(self, o) :
-        return self.maxpos-o.maxpos if self.minpos == o.minpos else self.minpos-o.minpos
-
     def __eq__(self, o) :
         return self.minpos == o.minpos and self.maxpos == o.maxpos
+
+    def __lt__(self, o) :
+        if not isinstance(o, type(self)) :
+            return NotImplemented
+        return (self.minpos, self.maxpos) < (o.minpos, o.maxpos)
 
     def maxElement(self) :
         """Returns the element (cluster or node) that has the maximum position."""
@@ -258,11 +260,13 @@ class SimpleJunction(object) :
         self.acceptor = self.maxpos if self.strand == '+' else self.minpos
         self.donor    = self.minpos if self.strand == '+' else self.maxpos
 
-    def __cmp__(self, o) :
-        return self.maxpos-o.maxpos if self.minpos == o.minpos else self.minpos-o.minpos
-
     def __eq__(self, o) :
         return self.minpos == o.minpos and self.maxpos == o.maxpos and self.strand == o.strand
+
+    def __lt__(self, o) :
+        if not isinstance(o, type(self)) :
+            return NotImplemented
+        return (self.minpos, self.maxpos) < (o.minpos, o.maxpos)
 
     def __hash__(self) :
         return self.__str__().__hash__()
@@ -342,7 +346,7 @@ class SpliceGraphPredictor(object) :
                 if self.graph.strand == '+' and d < a : continue
                 if self.graph.strand == '-' and d > a : continue
 
-                newId = self.nodegen.next()
+                newId = next(self.nodegen)
                 node  = self.graph.addNode(newId, a, d)
                 # If the node already exists (new node id not needed) skip it
                 if node.id == newId : result.append(node)

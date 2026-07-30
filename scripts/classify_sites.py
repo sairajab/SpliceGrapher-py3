@@ -278,7 +278,7 @@ clusters = None
 # Load reference gene model
 geneModel = loadGeneModels(opts.model, verbose=opts.verbose)
 
-outStream = file(opts.output, 'w', 0) if opts.output else sys.stdout
+outStream = open(opts.output, 'w', 1) if opts.output else sys.stdout
 
 # Perform the classification:
 classifyGenes(classifiers, geneModel, seqDict,

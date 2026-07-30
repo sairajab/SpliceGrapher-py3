@@ -83,11 +83,15 @@ class WIGRecord(object) :
     def chromosome(self) :
         return self.attrs[CHROM].lower()
 
-    def __cmp__(self, other) :
-        result = int(self.attrs[CHR_START]) - int(other.attrs[CHR_START])
-        if result == 0 :
-            result = int(self.attrs[CHR_END]) - int(other.attrs[CHR_END])
-        return result
+    def __eq__(self, other) :
+        return int(self.attrs[CHR_START]) == int(other.attrs[CHR_START]) \
+                and int(self.attrs[CHR_END]) == int(other.attrs[CHR_END])
+
+    def __lt__(self, other) :
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        return (int(self.attrs[CHR_START]), int(self.attrs[CHR_END])) < \
+               (int(other.attrs[CHR_START]), int(other.attrs[CHR_END]))
 
     def endpos(self) :
         return int(self.attrs[CHR_END])

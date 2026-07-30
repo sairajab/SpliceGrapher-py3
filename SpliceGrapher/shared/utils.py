@@ -364,7 +364,7 @@ class RandomListIterator(object) :
     def __iter__(self) :
         return self
 
-    def next(self) :
+    def __next__(self) :
         """Iterator implementation that returns a random value, with
         replacement, from a list."""
         i = self.rand.randint(0,self.limit)

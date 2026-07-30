@@ -109,8 +109,8 @@ class fasta_itr (object) :
     def __iter__(self) :
         return self
 
-    def next(self) :
-        return self.__itr.next()
+    def __next__(self) :
+        return next(self.__itr)
 
     def __getitem__(self,name) :
         return fasta_get_by_name(iter(self),name)
@@ -144,7 +144,7 @@ class fasta_slice (object) :
     def __iter__(self) :
         return self
 
-    def next(self) :
+    def __next__(self) :
         """
         Implementation of the iterator interface.
         """
@@ -163,7 +163,7 @@ class fasta_slice (object) :
             if not self.__foundFirst :
                 raise ValueError('did not find first record')
             return rec
-        rec = self.__itr.next()
+        rec = next(self.__itr)
 
         if self.__last is not None :
             if type(self.__first) == int :
@@ -264,7 +264,7 @@ def truncateSequences(fastaFile, exonSize, intronSize, acceptor=False, outFile=N
     outStream = sys.stdout
     if outFile :
         if verbose : sys.stderr.write('Writing output to %s\n' % outFile)
-        outStream = file(outFile, 'w')
+        outStream = open(outFile, 'w')
 
     for rec in fiter :
         midpt = (len(rec.sequence)/2)

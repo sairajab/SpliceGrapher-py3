@@ -106,18 +106,18 @@ class IsoformView(SpliceGraphView) :
 
         keys       = sorted(self.level.keys())
         isoLengths = dict([(n,acceptor(self.isoformMap[n][0])) for n in self.isoformMap])
-        isoKeys    = isoLengths.keys()
+        isoKeys    = list(isoLengths.keys())
         if isoWeights :
             # Account for any isoforms missing from the dictionary
             for k in isoKeys :
                 isoWeights.setdefault(k,0.0)
             isoKeys = [x for x in isoKeys if isoWeights[x] >= MINIMUM_WEIGHT]
-            isoKeys.sort(cmp=lambda x,y : int(10000*isoWeights[x])-int(10000*isoWeights[y]))
+            isoKeys.sort(key=lambda x : int(10000*isoWeights[x]))
             self.maxHeight = len(isoKeys)
         elif sortByName :
             isoKeys.sort()
         else :
-            isoKeys.sort(cmp=lambda x,y : isoLengths[x]-isoLengths[y])
+            isoKeys.sort(key=lambda x : isoLengths[x])
 
         graphWidth  = self.xMax - self.xMin + 1
         arrWidth    = self.arrowWidth()

@@ -179,7 +179,7 @@ class ClassifierConfig :
     def save(self, fileName) :
         """Writes a classifier configuration to the specified file."""
         if self.verbose : sys.stderr.write('Writing configuration to %s\n' % fileName)
-        outstream = file(fileName, 'w')
+        outstream = open(fileName, 'w')
         self.write(outstream)
 
     def setValue(self, name, value, section=CONFIG_SECTION) :

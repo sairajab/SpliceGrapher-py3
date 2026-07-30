@@ -29,8 +29,8 @@ from SpliceGrapher.SpliceGraph       import SpliceGraph, updateRoot, updateLeaf
 from optparse import OptionParser
 import sys, os
 
-def pslCmp(a,b) :
-    return (a.Tend-b.Tend) if a.Tstart == b.Tstart else (a.Tstart-b.Tstart)
+def pslKey(a) :
+    return (a.Tstart, a.Tend)
 
 USAGE = """%prog [options] psl-file
 
@@ -91,7 +91,7 @@ for r in pslRecords :
 # Sort each list by start/end positions:
 for k1 in pslDict :
     for k2 in pslDict[k1] :
-        pslDict[k1][k2].sort(cmp=pslCmp)
+        pslDict[k1][k2].sort(key=pslKey)
 
 counts = {'-':0,'+':0}
 for chrom in pslDict :
@@ -132,7 +132,7 @@ for chrom in pslDict :
             outPath   = os.path.join(opts.dir, '%s%s.gff' % (gene.id,opts.suffix))
             graph.writeGFF(outPath, haltOnError=True)
             counts[gene.strand] += 1
-        except ValueError, ve :
+        except ValueError as ve:
             if len(graph.nodeDict) == 0 :
                 if opts.singles :
                     sys.stderr.write('Unable to create graph for %s: created 0 nodes from %d PSL records.\n' % (gene.id, len(pslRecs)))

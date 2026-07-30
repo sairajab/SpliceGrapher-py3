@@ -90,14 +90,14 @@ def writeReport(options, jctDict) :
     outStream = open(opts.report, 'w')
     outStream.write('Breakdown of donor sites for %d introns:\n' % total)
     pairs = list(donorDict.items())
-    pairs.sort(cmp=lambda a,b : b[1]-a[1])
+    pairs.sort(key=lambda p: p[1], reverse=True)
     for p in pairs :
         pct = (100.0*p[1])/total
         outStream.write(' %s: %7d (%5.2f%%)\n' % (p[0],p[1],pct))
 
     outStream.write('Breakdown of acceptor sites for %d introns:\n' % total)
     pairs = list(acceptorDict.items())
-    pairs.sort(cmp=lambda a,b : b[1]-a[1])
+    pairs.sort(key=lambda p: p[1], reverse=True)
     for p in pairs :
         pct = (100.0*p[1])/total
         outStream.write(' %s: %7d (%5.2f%%)\n' % (p[0],p[1],pct))
@@ -115,7 +115,7 @@ def writeReport(options, jctDict) :
             jctRecs.append((d, a, jctDict[d][a], pct))
 
     # Sort in decreasing order of frequency
-    jctRecs.sort(cmp=lambda a,b : b[2]-a[2])
+    jctRecs.sort(key=lambda r: r[2], reverse=True)
     outStream.write('Breakdown of splice junctions:\n')
     for rec in jctRecs :
         outStream.write(" %s-%s: %7d (%7.4f%%)\n" % rec)
@@ -230,7 +230,7 @@ if opts.splicegraphs :
         indicator.update()
         try :
             graph = getFirstGraph(f.strip())
-        except ValueError, ve :
+        except ValueError as ve:
             sys.stderr.write('Warning: %s\n' % ve)
             continue
         if graph.isEmpty() : continue

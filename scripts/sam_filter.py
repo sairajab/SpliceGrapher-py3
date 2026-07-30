@@ -46,13 +46,10 @@ EXACT_CIGAR = '='
 NULL_CIGAR  = '*'
 NOMINAL_POSITIVE = 1.0
 
-def cmpQuintuple(a,b) :
+def quintupleKey(a) :
     # quintuple: chromosome, strand, position, type, score
     # sort by chromosome, then position, then strand
-    if a[0] == b[0] :
-        return cmp(a[1],b[1]) if a[2]==b[2] else a[2]-b[2]
-    else :
-        return cmp(a[0],b[0])
+    return (a[0], a[2], a[1])
 
 def jctString(c,d,a,s) :
     return '%s;%d;%d;%s' % (c,d,a,s)
@@ -391,7 +388,7 @@ if opts.report :
         for s in accSites[c].keys() :
             for p in accSites[c][s].keys() :
                 quintuples.append((c,s,p,'a',accSites[c][s][p]))
-    quintuples.sort(cmp=cmpQuintuple)
+    quintuples.sort(key=quintupleKey)
     rstream = open(opts.report,'w')
     rstream.write('%s\n' % '\n'.join(['%s\t%s\t%d\t%s\t%s' % q for q in quintuples]))
     rstream.close()

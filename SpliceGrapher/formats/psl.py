@@ -68,7 +68,7 @@ def estsToSpliceGraph(geneName, recs, chromosome, **args) :
         prev     = None
         for i in range(len(exons)) :
             exon = exons[i]
-            eid  = exonIds.next()
+            eid  = next(exonIds)
             node = subgraph.addNode(eid, exon.minpos, exon.maxpos)
             #assert(node.id == eid)
             node.addIsoform(r.Qname)
@@ -196,14 +196,13 @@ class PSLRecord(object) :
         except AttributeError as e :
             raise Exception('Argument to PSLRecord.__cmp__(o) must be a PSLRecord instance. Exception: %s'%e)
 
-    def __cmp__(self,o) :
+    def __lt__(self,o) :
         try :
-            c = cmp(self.Tname,o.Tname)
-            if c == 0 :
-                return cmp(self.Tstart,o.Tstart)
-            return c
+            if self.Tname != o.Tname :
+                return self.Tname < o.Tname
+            return self.Tstart < o.Tstart
         except AttributeError as e :
-            raise Exception('Argument to PSLRecord.__cmp__(o) must be a PSLRecord instance. Exception: %s'%e)
+            raise Exception('Argument to PSLRecord.__lt__(o) must be a PSLRecord instance. Exception: %s'%e)
 
     def __hash__(self) :
         try :

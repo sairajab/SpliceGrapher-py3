@@ -117,7 +117,7 @@ if opts.output :
     if '.gzip'.find(ext.lower()) >= 0 :
         outStream = gzip.open(opts.output, 'w')
     else :
-        outStream = file(opts.output, 'w')
+        outStream = open(opts.output, 'w')
 
 #---------------------------------------------------------------
 # Generate sequences

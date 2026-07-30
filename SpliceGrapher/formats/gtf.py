@@ -183,11 +183,13 @@ class GTF_Gene(object) :
         self.xcripts.setdefault(tname,GTF_Transcript(tname))
         self.xcripts[tname].append(rec)
 
-    def __cmp__(self,other) :
-        if self.minpos == other.minpos :
-            return self.maxpos - other.maxpos
-        else :
-            return self.minpos - other.minpos
+    def __eq__(self,other) :
+        return self.minpos == other.minpos and self.maxpos == other.maxpos
+
+    def __lt__(self,other) :
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        return (self.minpos, self.maxpos) < (other.minpos, other.maxpos)
 
     def __len__(self) :
         return len(self.records)
@@ -408,10 +410,10 @@ class GTFParser(object) :
     def __iter__(self) :
         return self
 
-    def next(self) :
+    def __next__(self) :
         """Iterator implementation."""
         try :
-            return self.graphDict[self.graphIter.next()]
+            return self.graphDict[next(self.graphIter)]
         except Exception :
             raise StopIteration
 
@@ -495,4 +497,4 @@ def keyString(rec) :
 
 def getFirstCufflinksGraph(f) :
     """Returns the first graph in a Cufflinks GTF file."""
-    return GTFParser(f).next()
+    return next(GTFParser(f))

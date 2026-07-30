@@ -116,12 +116,17 @@ class BEDRecord(object) :
         """Returns the chromosome given by the record."""
         return self.attrs[CHROM].lower()
 
-    def __cmp__(self, other) :
+    def __eq__(self, other) :
+        """Permits BED records to be compared based on their start/end position in the chromosome."""
+        return int(self.attrs[CHR_START]) == int(other.attrs[CHR_START]) \
+                and int(self.attrs[CHR_END]) == int(other.attrs[CHR_END])
+
+    def __lt__(self, other) :
         """Permits BED records to be sorted based on their start position in the chromosome."""
-        result = int(self.attrs[CHR_START]) - int(other.attrs[CHR_START])
-        if result == 0 :
-            result = int(self.attrs[CHR_END]) - int(other.attrs[CHR_END])
-        return result
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        return (int(self.attrs[CHR_START]), int(self.attrs[CHR_END])) < \
+               (int(other.attrs[CHR_START]), int(other.attrs[CHR_END]))
 
     def count(self) :
         """Returns the read depth (coverage) associated with a record."""

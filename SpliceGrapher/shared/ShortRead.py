@@ -279,13 +279,14 @@ class Read(object) :
         return self.chromosome == other.chromosome and self.strand == other.strand \
                 and self.p1 == other.p1 and self.p2 == other.p2
 
-    def __cmp__(self, other) :
-        if self.chromosome < other.chromosome :
-            return -1
-        elif self.minpos == other.minpos :
-            return self.maxpos - other.maxpos
-        else :
-            return self.minpos - other.minpos
+    def __lt__(self, other) :
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        if self.chromosome != other.chromosome :
+            return self.chromosome < other.chromosome
+        if self.minpos != other.minpos :
+            return self.minpos < other.minpos
+        return self.maxpos < other.maxpos
 
     def __hash__(self) :
         return self.__str__().__hash__()
@@ -460,7 +461,7 @@ class Cluster(object) :
     id_gen = idFactory('c_')
 
     def __init__(self, chromosome, pos, totDepth, id=None) :
-        self.id          = id if id else Cluster.id_gen.next()
+        self.id          = id if id else next(Cluster.id_gen)
         self.chromosome  = chromosome.lower()
         self.minpos      = pos
         self.maxpos      = pos
@@ -469,8 +470,10 @@ class Cluster(object) :
         self.depths[pos] = totDepth
         #assert(self.minpos <= self.maxpos)
 
-    def __cmp__(self, other) :
-        return self.minpos-other.minpos if self.minpos != other.minpos else self.maxpos-other.maxpos
+    def __lt__(self, other) :
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        return (self.minpos, self.maxpos) < (other.minpos, other.maxpos)
 
     def __eq__(self, other) :
         return self.id == other.id

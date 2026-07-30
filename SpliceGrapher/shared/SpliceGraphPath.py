@@ -38,15 +38,6 @@ class SpliceGraphPath(object) :
         self.minpos   = min(self.minpos, n.minpos)
         self.maxpos   = max(self.maxpos, n.maxpos)
 
-    def __cmp__(self, o) :
-        """Sorting method that prioritizes paths by the number of nodes
-        followed by longest exons and total path span."""
-        if len(self) != len(o) : return len(self) - len(o)
-        # Second priority: path with longest exons
-        if self.lengths != o.lengths : return self.lengths - o.lengths
-        # Finally try path with longest span
-        return self.span() - o.span()
-
     def __hash__(self) :
         return self.__str__().__hash__()
 

@@ -237,14 +237,6 @@ class BaseFeature(object) :
         """
         return self.start()-2 if self.strand == '+' else self.start()
 
-    def __cmp__(self, other) :
-        if self.chromosome != other.chromosome :
-            return 2*(self.chromosome > other.chromosome) - 1
-        elif self.minpos == other.minpos :
-            return self.maxpos - other.maxpos
-        else :
-            return self.minpos - other.minpos
-
     def contains(self, pos, strand) :
         return (strand == self.strand and self.minpos <= pos <= self.maxpos)
 
@@ -457,11 +449,6 @@ class CDS(Exon) :
     def __init__(self, start, end, chromosome, strand, attr={}) :
         BaseFeature.__init__(self, CDS_TYPE, start, end, chromosome, strand, attr)
         self.parents = []
-
-    def __cmp__(self, o) :
-        """Special for CDS records, as two records may be the same in other regards but different types."""
-        result = BaseFeature.__cmp__(self,o)
-        return cmp(self.featureType, o.featureType) if result == 0 else result
 
     def __eq__(self, o) :
         """Special for CDS records, as two records may have the same locations but different types."""
@@ -959,7 +946,7 @@ class GeneModel(object) :
 
     def __contains__(self, gene) :
         """Returns true if a gene is in the model; false otherwise."""
-        return self.allGenes.has_key(str(gene))
+        return str(gene) in self.allGenes
 
     def addChromosome(self, start, end, name) :
         """Adds a chromosome to a gene model or updates the end points

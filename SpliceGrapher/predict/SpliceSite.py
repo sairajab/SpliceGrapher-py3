@@ -124,7 +124,7 @@ def truncateSequences(fastaFile, exonSize, intronSize, outFile, acceptor=False, 
     import sys
     from SpliceGrapher.formats.fasta import fasta_itr, FastaRecord
     fiter     = fasta_itr(fastaFile)
-    outStream = file(outFile, 'w')
+    outStream = open(outFile, 'w')
 
     pos = 0
     neg = 0

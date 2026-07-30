@@ -994,8 +994,13 @@ class SAMRecord(object) :
         """Convenience method returns the cigar string."""
         return self.attrs[CIGAR]
 
-    def __cmp__(self, other) :
-        return self.attrs[POS] - other.attrs[POS]
+    def __eq__(self, other) :
+        return self.attrs[POS] == other.attrs[POS]
+
+    def __lt__(self, other) :
+        if not isinstance(other, type(self)) :
+            return NotImplemented
+        return self.attrs[POS] < other.attrs[POS]
 
     def flag(self) :
         """Convenience method returns the bitwise flag value as an int."""

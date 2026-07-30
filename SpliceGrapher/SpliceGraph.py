@@ -370,7 +370,7 @@ def getFirstGraph(f, **args) :
     """Returns just the first splice graph found in a file."""
     annotate = getAttribute('annotate', False, **args)
     try :
-        result = SpliceGraphParser(f, **args).next()
+        result = next(SpliceGraphParser(f, **args))
         if annotate : result.annotate()
         return result
     except StopIteration :
@@ -562,12 +562,6 @@ class Edge(object) :
         # Using minpos/maxpos allows an edge to be compared with an exon.
         return self.minpos == o.minpos and self.maxpos == o.maxpos and self.pos[0] == o.pos[0] and self.pos[3] == o.pos[3]
 
-    def __cmp__(self, o) :
-        result = self.pos[0] - o.pos[0]
-        if not result : result = self.pos[1] - o.pos[1]
-        if not result : result = self.pos[2] - o.pos[2]
-        if not result : result = self.pos[3] - o.pos[3]
-        return result
     
     def __lt__(self, o):
         if not isinstance(o, type(self)):
@@ -720,14 +714,6 @@ class SpliceGraphNode(object) :
 
     def branchingFactor(self) :
         return max(len(self.parents), len(self.children))
-
-    def __cmp__(self, other) :
-        """Permits sorting based on minimum node position.  Ties are broken by the
-        shorter of the two nodes."""
-        if self.minpos == other.minpos :
-            return self.maxpos - other.maxpos
-        else :
-            return self.minpos - other.minpos
 
     def codons(self, codonType) :
         """Returns a list of codon positions within the node, or
@@ -1073,14 +1059,6 @@ class SpliceGraph(object) :
 
         return min(branches), max(branches), avg
 
-    def __cmp__(self, other) :
-        """Permits sorting graphs based on minimum position.  Ties are broken by the
-        shorter of the two graphs."""
-        if self.minpos == other.minpos :
-            return self.maxpos - other.maxpos
-        else :
-            return self.minpos - other.minpos
-
     def deleteNode(self, n) :
         """Removes a node from a graph, along with all edges attached to it.
         Returns the node that was deleted."""
@@ -1387,12 +1365,12 @@ class SpliceGraph(object) :
         result   = SpliceGraph(newName, self.chromosome, self.strand)
         allNodes = self.resolvedNodes() + other.resolvedNodes()
         for node in allNodes :
-            newNode = result.addNode(idgen.next(), node.minpos, node.maxpos)
+            newNode = result.addNode(next(idgen), node.minpos, node.maxpos)
             for c in node.children :
-                cNode = result.addNode(idgen.next(), c.minpos, c.maxpos)
+                cNode = result.addNode(next(idgen), c.minpos, c.maxpos)
                 newNode.addChild(cNode)
             for p in node.parents :
-                pNode = result.addNode(idgen.next(), p.minpos, p.maxpos)
+                pNode = result.addNode(next(idgen), p.minpos, p.maxpos)
                 pNode.addChild(newNode)
             for iso in node.isoformSet :
                 newNode.addIsoform(iso)
@@ -1509,7 +1487,7 @@ class SpliceGraphParser(object) :
         """Iterator implementation."""
         return self
 
-    def next(self) :
+    def __next__(self) :
         """Iterator implementation."""
         try :
             key = list(self.graphDict.keys())[self.graphId]
